@@ -4,15 +4,10 @@
 import sys
 import json
 import hashlib
-
 from flask import Flask
 from time import time
-from uuid import uuid4
-from urllib.parse import urlparse
 from flask.globals import request
 from flask.json import jsonify
-import datetime
-import binascii
 import Crypto
 import Crypto.Random
 from Crypto.Hash import SHA
@@ -21,8 +16,6 @@ from Crypto.Signature import PKCS1_v1_5
 from Crypto.Cipher import PKCS1_OAEP
 from base64 import b64encode, b64decode
 from uuid import uuid4
-
-'''############################## Entities #############################'''
 
 
 # The central authority that controls the permissions and the blockchain
@@ -75,16 +68,6 @@ class CA(object):
             if client['client_id'] == client_id:
                 return client['public_key']
         return None
-    '''
-    # calculate nonce
-    def calculate_nonce(self, index, previous_block_hash, transactions):
-        nonce = 0
-        while self.validate_Proof(index, previous_block_hash, transactions, nonce) is False:
-            nonce += 1
-            # print(nonce)
-        print(f'nonce is : {nonce}')
-        return nonce
-    '''
 
     # Validate the previous block in the chain
     def validate_block(self, block):
@@ -103,13 +86,6 @@ class CA(object):
                 return True
         return False
 
-    '''
-    def validate_Proof(self, index, previous_block_hash, transactions, nonce):
-        data = f'{index},{previous_block_hash},{transactions},{nonce}'.encode()
-        hash_data = hashlib.sha256(data).hexdigest()
-        return hash_data[:len(self.difficulty_level)] == self.difficulty_level
-    '''
-
     @property
     def private_key(self):
         return b64encode(self._private_key.exportKey()).decode('ascii')
@@ -126,21 +102,6 @@ class CA(object):
 # verification process with government or other authorities
 def validated(persona, name, address):
     return True  # validate by default
-
-'''
-class Client:
-    def __init__(self, level):
-        self._level = level
-        random = Crypto.Random.new().read
-        self._private_key = RSA.generate(1024, random)
-        self._public_key = self._private_key.publickey()
-        self._signer = PKCS1_v1_5.new(self._private_key)
-
-    @property
-    def identity(self):
-        return
-binascii.hexlify(self._public_key.exportKey(format='DER')).decode('ascii')
-'''
 
 
 # central authority of blockchain
@@ -179,25 +140,6 @@ class MedChain(object):
     def add_signature(self, dic, sender_private_key, description='signed_hash'):
         med_crypt = MedCrypt(private_key=sender_private_key)
         dic[description] = med_crypt.sign(med_crypt.hash(dic))
-
-    '''
-    # add med_data to the blockchain depending on the persona
-    def add_med_data(self, sender_id, receiver_id, drugs, days, signature_key):
-        self.med_data.append({
-            'sender_id': sender_id,
-            'receiver_id': receiver_id
-        })
-        # check the permissions and accessibility
-        persona_level = _ca.get_persona_level(sender_id)
-        if persona_level is not None:
-            if persona_level == 'patient':
-
-            elif persona_level == 'practitioner':
-                self.practitioner_add_prescription(sender_id, receiver_id, drugs,  days, signature_key)
-            elif persona_level == 'pharmacy':
-
-        return None
-    '''
 
     # add prescription to the blockchain by practitioner
     def practitioner_add_prescription(self, practitioner_id, patient_id, drugs, days, practitioner_private_key):
@@ -371,11 +313,8 @@ class MedCrypt(object):
 
 # node_identifier = str(uuid4()).replace('-', "")
 medChain = MedChain()
-
 # Flask
 app = Flask(__name__)
-
-
 
 
 @app.route('/signup/new', methods=['POST'])
@@ -402,6 +341,7 @@ def do_signup():
         'private_key': private_key
     }
     return jsonify(response), 200
+
 
 # get signup info
 @app.route('/signup/show', methods=['GET'])
@@ -437,6 +377,7 @@ def show_med_data():
     }
     return jsonify(response), 200
 
+
 # the doctor will add new prescription
 @app.route('/prescription/new', methods=['POST'])
 def new_prescription():
@@ -462,6 +403,7 @@ def new_prescription():
     )
     response = {'message': f'MedData will be added to the block {index}'}
     return jsonify(response), 200
+
 
 #    def patient_share_prescription(self, patient_id, clinic_id, patient_private_key, days, prescription_id):
 # the patient will share the prescription
@@ -490,6 +432,7 @@ def new_share():
     response = {'message': f'MedData will be added to the block {index}'}
     return jsonify(response), 200
 
+
 # the pharmacy will sell the medicine
 @app.route('/purchase/new', methods=['POST'])
 def new_purchase():
@@ -516,6 +459,7 @@ def new_purchase():
     )
     response = {'message': f'MedData will be added to the block {index}'}
     return jsonify(response), 200
+
 
 '''
 Since this is a private blockchain, there is no PoW, but the chain and the participants will be verified.
@@ -545,6 +489,7 @@ def selective_endorsement():
         'med_data': block['med_data']
     }
     return jsonify(response), 200
+
 
 '''
 # the pharmacy will add the receipt to the blockchain
