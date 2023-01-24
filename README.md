@@ -1,3 +1,6 @@
+# About MedChain
+MedChain uses core technical ideas of Bitcoin's blockchain and improves it by replacing the costly proof-of-work with selective-endorsement approach to authenticate the blocks. As a patient-centered platform, it allows individuals to have full control over their data, enabling transparency in the healthcare industry, and simultaneously avoiding purchases of illegal and duplicated products with fake prescriptions.
+
 # Using Medchain
 ## Creating the three main personas: Patient, Practitioner, and Pharmacy 
 - The POST URL: http://localhost:8090/signup/new
