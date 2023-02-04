@@ -21,7 +21,7 @@ MedChain uses core technical ideas of Bitcoin's blockchain and improves it by re
     "address" : "55555"
 }
 ```
-3- Pharmacy:
+3. Pharmacy:
 ```json
 {
     "persona":"pharmacy",
